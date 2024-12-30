@@ -1,0 +1,38 @@
+group = "com.mg.libzt_flutter"
+version = "1.0"
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.1.0")
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        flatDir { dirs project(':libzt_flutter').file('libs')}
+    }
+}
+
+apply plugin: "com.android.library"
+
+android {
+    namespace = "com.mg.libzt_flutter"
+    compileSdk = 35
+    ndkVersion = android.ndkVersion
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    defaultConfig {
+        minSdk = 21
+    }
+}
+dependencies {
+    api(name: 'libzt-release', ext: 'aar')
+}
