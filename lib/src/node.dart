@@ -152,7 +152,7 @@ class ZeroTierNode {
   }
 
   /// Get network info. Returns null if any error occurs.
-  ZeroTierNetwork? getNetworkInfo(BigInt networkId) {
+  ZeroTierNetwork getNetworkInfo(BigInt networkId) {
     int res = 0;
     int nwId = networkId.toIntBitwise();
 
@@ -179,7 +179,7 @@ class ZeroTierNode {
         break;
     }
 
-    if (res < 0) return null;
+    // if (res < 0) return null;
 
     var transportIsReady = zts.zts_net_transport_is_ready(nwId) == 1;
     var mac = zts.zts_net_get_mac(nwId).toBigIntBitwise();
@@ -189,7 +189,7 @@ class ZeroTierNode {
     var macStr = res == 0 ? macStrPointer.value : '';
     macStrPointer.free();
 
-    if (res < 0) return null;
+    // if (res < 0) return null;
 
     var broadcast = zts.zts_net_get_broadcast(nwId) == 1;
     var mtu = zts.zts_net_get_mtu(nwId);
@@ -199,10 +199,10 @@ class ZeroTierNode {
     var name = res == 0 ? namePointer.value : '';
     namePointer.free();
 
-    if (res < 0) return null;
+    // if (res < 0) return null;
 
     res = zts.zts_net_get_type(nwId);
-    if (res < 0) return null;
+    // if (res < 0) return null;
 
     NetworkType type = NetworkType.public;
     switch (zts_net_info_type_t.fromValue(res)) {

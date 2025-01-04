@@ -29,4 +29,21 @@ class ZeroTierNetwork {
   final NetworkType type;
   final bool routeAssigned;
   final String address;
+
+  // Override the toString method
+  @override
+  String toString() {
+    return 'ZeroTierNetwork { '
+      'ID: $idString, '
+      'Name: $name, '
+      'Status: ${status.name}, '
+      'Type: ${type.name}, '
+      'Transport Ready: $transportIsReady, '
+      'MAC: $macString, '
+      'Broadcast Enabled: $broadcastEnabled, '
+      'MTU: $mtu, '
+      'Route Assigned: $routeAssigned, '
+      'Address: $address '
+      '}';
+  }
 }
