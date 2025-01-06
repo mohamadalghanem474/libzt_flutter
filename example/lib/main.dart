@@ -5,7 +5,7 @@ import 'zt_http.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ZtHttp.init(networkId: '9f77fc393ec1bb8a');
+  ZtHttp.init(networkId: '9f77fc393ec1bb8a');
   runApp(const MyApp());
 }
 

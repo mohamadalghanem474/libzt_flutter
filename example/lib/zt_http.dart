@@ -7,7 +7,7 @@ class ZtHttp {
   static NetworkStatus get networkStatus =>
       _zeroTierNode.getNetworkStatus(_networkId);
 
-  static Future<void> init({required String networkId}) async {
+  static void init({required String networkId}) async {
     _networkId = BigInt.parse(networkId, radix: 16);
     try {
       if (!_zeroTierNode.running) {
