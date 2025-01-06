@@ -1,4 +1,4 @@
-enum NetworkStatus { waitingForConfig, ok, accessDenied, notFound, portError, clientTooOld }
+enum NetworkStatus { waitingForConfig, ok, accessDenied, notFound, portError, clientTooOld, unknown }
 
 enum NetworkType { private, public }
 
@@ -11,7 +11,6 @@ class ZeroTierNetwork {
     this.broadcastEnabled,
     this.mtu,
     this.name,
-    this.status,
     this.type,
     this.routeAssigned,
     this.address,
@@ -25,7 +24,6 @@ class ZeroTierNetwork {
   final bool broadcastEnabled;
   final int mtu;
   final String name;
-  final NetworkStatus status;
   final NetworkType type;
   final bool routeAssigned;
   final String address;
@@ -36,7 +34,6 @@ class ZeroTierNetwork {
     return 'ZeroTierNetwork { '
       'ID: $idString, '
       'Name: $name, '
-      'Status: ${status.name}, '
       'Type: ${type.name}, '
       'Transport Ready: $transportIsReady, '
       'MAC: $macString, '

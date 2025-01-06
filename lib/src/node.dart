@@ -1,5 +1,5 @@
-﻿import 'dart:typed_data';
-
+﻿import 'dart:async';
+import 'dart:typed_data';
 import 'package:libzt_flutter/src/zts.dart';
 
 import 'extensions.dart';
@@ -16,7 +16,6 @@ class ZeroTierNode {
   bool get running => getId().success;
 
   bool get online => zts.zts_node_is_online() == 1;
-
   /// Set path to storage directory.
   /// Must be called before node is started.
   /// If not set the identity (node id) won't be persisted.
@@ -51,7 +50,8 @@ class ZeroTierNode {
 
     try {
       final res = zts.zts_node_get_id_pair(data.pointer.cast(), len.pointer);
-      return ZeroTierResultWithData2(res, Uint8List.fromList(data.data), len.value);
+      return ZeroTierResultWithData2(
+          res, Uint8List.fromList(data.data), len.value);
     } finally {
       data.free();
       len.free();
@@ -93,7 +93,8 @@ class ZeroTierNode {
   }
 
   /// Wait for network to become ready
-  Future<ZeroTierResult> waitForNetworkReady(BigInt networkId, [int timeout = 10000]) async {
+  Future<ZeroTierResult> waitForNetworkReady(BigInt networkId,
+      [int timeout = 10000]) async {
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     while (true) {
       if (DateTime.now().millisecondsSinceEpoch - timestamp > timeout) {
@@ -110,7 +111,8 @@ class ZeroTierNode {
   }
 
   /// Wait for address assignment
-  Future<ZeroTierResult> waitForAddressAssignment(BigInt networkId, [int timeout = 10000]) async {
+  Future<ZeroTierResult> waitForAddressAssignment(BigInt networkId,
+      [int timeout = 10000]) async {
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     while (true) {
       if (DateTime.now().millisecondsSinceEpoch - timestamp > timeout) {
@@ -131,7 +133,8 @@ class ZeroTierNode {
     final ipStr = NativeString.empty(ZTS_IP_MAX_STR_LEN);
 
     try {
-      var res = zts.zts_addr_get_str(networkId.toIntBitwise(), ZTS_AF_INET, ipStr.pointer, ZTS_IP_MAX_STR_LEN);
+      var res = zts.zts_addr_get_str(networkId.toIntBitwise(), ZTS_AF_INET,
+          ipStr.pointer, ZTS_IP_MAX_STR_LEN);
       return ZeroTierResultWithData(res, res == 0 ? ipStr.value : null);
     } finally {
       ipStr.free();
@@ -151,8 +154,7 @@ class ZeroTierNode {
     return ZeroTierResult(res);
   }
 
-  /// Get network info. Returns null if any error occurs.
-  ZeroTierNetwork getNetworkInfo(BigInt networkId) {
+  NetworkStatus getNetworkStatus(BigInt networkId) {
     int res = 0;
     int nwId = networkId.toIntBitwise();
 
@@ -178,14 +180,21 @@ class ZeroTierNode {
         status = NetworkStatus.clientTooOld;
         break;
     }
+    return status;
+  }
 
+  /// Get network info. Returns null if any error occurs.
+  ZeroTierNetwork getNetworkInfo(BigInt networkId) {
+    int res = 0;
+    int nwId = networkId.toIntBitwise();
     // if (res < 0) return null;
 
     var transportIsReady = zts.zts_net_transport_is_ready(nwId) == 1;
     var mac = zts.zts_net_get_mac(nwId).toBigIntBitwise();
 
     var macStrPointer = NativeString.empty(ZTS_MAC_ADDRSTRLEN);
-    res = zts.zts_net_get_mac_str(nwId, macStrPointer.pointer, ZTS_MAC_ADDRSTRLEN);
+    res = zts.zts_net_get_mac_str(
+        nwId, macStrPointer.pointer, ZTS_MAC_ADDRSTRLEN);
     var macStr = res == 0 ? macStrPointer.value : '';
     macStrPointer.free();
 
@@ -195,7 +204,8 @@ class ZeroTierNode {
     var mtu = zts.zts_net_get_mtu(nwId);
 
     var namePointer = NativeString.empty(ZTS_MAX_NETWORK_SHORT_NAME_LENGTH);
-    res = zts.zts_net_get_name(nwId, namePointer.pointer, ZTS_MAX_NETWORK_SHORT_NAME_LENGTH);
+    res = zts.zts_net_get_name(
+        nwId, namePointer.pointer, ZTS_MAX_NETWORK_SHORT_NAME_LENGTH);
     var name = res == 0 ? namePointer.value : '';
     namePointer.free();
 
@@ -225,7 +235,6 @@ class ZeroTierNode {
       broadcast,
       mtu,
       name,
-      status,
       type,
       routeAssigned,
       address ?? '',
