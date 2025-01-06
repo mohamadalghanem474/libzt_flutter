@@ -5,7 +5,7 @@ import 'zt_http.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  ZtHttp.init(networkId: '9f77fc393ec1bb8a');
+  await ZtHttp.init(networkId: '9f77fc393ec1bb8a');
   runApp(const MyApp());
 }
 
@@ -14,7 +14,9 @@ Widget statusNetwork = StreamBuilder<NetworkStatus>(
   stream:
       Stream.periodic(const Duration(seconds: 1), (_) => ZtHttp.networkStatus),
   builder: (context, snapshot) {
-    return Text(snapshot.data == NetworkStatus.unknown ? 'Loading' : snapshot.data.toString());
+    return Text(snapshot.data == NetworkStatus.unknown
+        ? 'Loading'
+        : snapshot.data.toString());
   },
 );
 
